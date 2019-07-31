@@ -17,7 +17,7 @@ class InstagramBot():
 
     #LIMITES E INTERVALOS
     self.parar = False                        #FUTURAMENTE PARA BOTÃO QUE PARA INTERAÇÃO
-    self.limiteDiario = 350                   #LIMITE DE SEGUIR POR DIA
+    self.limiteDiario = 350                   #LIMITE DE SEGUIR E PARAR DE SEGUIR POR DIA
     self.seguirPorHora = 30                   #LIMITE DE SEGUIR POR HORA
     self.intervalo = 60*60/self.seguirPorHora #INTERVALO ENTRE SEGUIR UMA PESSOA E OUTRA
 
@@ -233,22 +233,28 @@ class InstagramBot():
 
     self.tiraSugestao()
 
+    parouDeSeguir = 0
     #VAI NAS PESSOAS QUE SEGUIMOS E VEMOS SE ELAS NOS SEGUEM
-    ultimoIndex = 0
-    while True:
+    while 100 > parouDeSeguir:
       #PEGA PESSOAS QUE VC SEGUE
       seguindo = self.checkaElemento('body > div > div > div > ul > div > li', True)
-      seguindo = seguindo[ultimoIndex:]
 
+      print(seguidores)
       #SE NÃO ME SEGUE PARA DE SEGUIR
-      for i in range(len(seguindo)):
-        if seguindo[i].text not in seguidores:
-          #CLICA EM PARAR DE SEGUIR
-          seguindo[i].find_element_by_css_selector('button').click()
-          #CONFIRMA
-          self.checkaElemento('body > div:nth-child(20) > div > div > div > button').click()
-          time.sleep(self.intervalo)
-        ultimoIndex += 1
+      for i in seguindo:
+        if i.find_element_by_css_selector('div > div > div > div> a').text not in seguidores:
+          print(i.text)
+          try:
+            #CLICA EM PARAR DE SEGUIR
+            i.find_element_by_css_selector('button').click()
+            #CONFIRMA
+            self.checkaElemento('body > div:nth-child(20) > div > div > div > button').click()
+            parouDeSeguir += 1
+            time.sleep(self.intervalo)
+          except:
+            self.scroll()
+          if parouDeSeguir > 100:
+            break
 
       #DA SCROLL
       self.scroll()
