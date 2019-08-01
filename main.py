@@ -234,33 +234,56 @@ class InstagramBot():
     self.tiraSugestao()
 
     parouDeSeguir = 0
+    pos = 0
+    pegouTodos = False
     #VAI NAS PESSOAS QUE SEGUIMOS E VEMOS SE ELAS NOS SEGUEM
     while 100 > parouDeSeguir:
       #PEGA PESSOAS QUE VC SEGUE
-      seguindo = self.checkaElemento('body > div > div > div > ul > div > li', True)
+      
 
-      print(seguidores)
-      #SE NÃO ME SEGUE PARA DE SEGUIR
-      for i in seguindo:
-        if i.find_element_by_css_selector('div > div > div > div> a').text not in seguidores:
-          print(i.text)
-          try:
-            #CLICA EM PARAR DE SEGUIR
-            i.find_element_by_css_selector('button').click()
-            #CONFIRMA
-            self.checkaElemento('body > div:nth-child(20) > div > div > div > button').click()
-            parouDeSeguir += 1
-            time.sleep(self.intervalo)
-          except:
-            self.scroll()
-          if parouDeSeguir > 100:
-            break
+      #PEGA TODOS QUE ESTA SEGUINDO
+      while not pegouTodos:
+            
+        seguindo = self.checkaElemento('body > div > div > div > ul > div > li', True)
 
-      #DA SCROLL
-      self.scroll()
+        self.scroll()
 
-      time.sleep(0.5)
+        time.sleep(0.5)
+
+        if len(seguindo) == len(self.checkaElemento('body > div > div > div > ul > div > li', True)):
+          pegouTodos = True
 
       #CASO TENHO PEGO TODOS AS PESSOAS QUE VC SEGUE FINALIZA WHILE
-      if len(self.checkaElemento('body > div > div > div > ul > div > li', True)) == len(seguindo):
+      print(f'len-seguindo = {len(seguindo)}')
+      if pos >= len(seguindo):
         break
+
+      #SE NÃO ME SEGUE PARA DE SEGUIR
+      if seguindo[pos].find_element_by_css_selector('div > div > div > div> a').text not in seguidores:
+        print(seguindo[pos].find_element_by_css_selector('div > div > div > div> a').text)
+        try:
+
+          #VAI ATE O ELEMENTO E RETORNA CORDENADAS
+          cords = seguindo[pos].location_once_scrolled_into_view
+          print(f'teste vai ate o elemento = {cords}')
+
+          #CLICA EM PARAR DE SEGUIR
+          seguindo[pos].find_element_by_css_selector('button').click()
+          #CONFIRMA
+          self.checkaElemento('body > div:nth-child(20) > div > div > div > button').click()
+          parouDeSeguir += 1
+
+          if pos < len(seguindo):
+            pos += 1
+          print(f'Parou de seguir = {parouDeSeguir}')
+          time.sleep(self.intervalo)
+        except:
+          print('exeção')
+      else:
+        if pos < len(seguindo):
+          pos += 1
+
+      print(f'pos = {pos}')
+
+      
+      
