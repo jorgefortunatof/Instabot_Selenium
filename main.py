@@ -150,22 +150,23 @@ class InstagramBot():
         for i in self.checkaElemento('body > div > div > div > ul > div > li > div > div > button', True):
           if i.text == 'Seguir' and i not in seguidores_seguir:
             seguidores_seguir.append(i)
-          
-      #SEGUE UM POR UM
-      seguidores_seguir[pos].location_once_scrolled_into_view
-      seguidores_seguir[pos].click()
-      seguil += 1
-      print(f'Seguil: {seguil}')
-
-      time.sleep(self.intervalo)
-
-      print(f'len_seguidores = {len(seguidores_seguir)}')
-      if pos < len(seguidores_seguir):
-        pos += 1
-        print(f'pos = {pos}')
-
       
-      
+      try:
+        #SEGUE UM POR UM
+        seguidores_seguir[pos].location_once_scrolled_into_view
+        seguidores_seguir[pos].click()
+        seguil += 1
+        print(f'Seguil: {seguil}')
+
+        time.sleep(self.intervalo)
+
+        print(f'len_seguidores = {len(seguidores_seguir)}')
+        if pos < len(seguidores_seguir):
+          pos += 1
+          print(f'pos = {pos}')
+      except:
+        self.acaoBloqueada()
+
   #SEGUE POR HASHTAGS
   def seguirHashtag (self):
     seguil = 0
@@ -285,6 +286,7 @@ class InstagramBot():
 
         except:
           print('exeção')
+          self.acaoBloqueada()
 
         if pos < len(seguindo):
           pos += 1
