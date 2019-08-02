@@ -134,30 +134,38 @@ class InstagramBot():
     self.tiraSugestao()
 
     #LISTA INICIAL DE SEGUIDORES
-    seguidores = self.checkaElemento('body > div > div > div > ul > div > li > div > div > button', True)
+    seguidores_seguir = []
 
     #SEGUE SEGUIDORES
-    cont = 0
+    pos = 0
     seguil = 0
-    while len(seguidores) >= cont and seguil < self.limiteDiario and self.parar == False:
+    while len(seguidores_seguir) >= pos and seguil < self.limiteDiario and self.parar == False:
+      
+      #PEGA VARIOS PARA IR SEGUINDO
+      while len(seguidores_seguir) < self.limiteDiario:
+        self.scroll()
+        time.sleep(0.3)
+
+        #TIRA PESSOAS QUE JÁ SEGUIMOS
+        for i in self.checkaElemento('body > div > div > div > ul > div > li > div > div > button', True):
+          if i.text == 'Seguir' and i not in seguidores_seguir:
+            seguidores_seguir.append(i)
+          
       #SEGUE UM POR UM
-      for b in seguidores:      
-        texto = b.text
-        if texto == 'Seguir':
-            b.click()
-            seguil += 1
-            print(f'Seguil: {seguil}')
-            time.sleep(self.intervalo)
-        
-        
-        cont += 1
-        #SCROLL E PEGA MAIS SEGUIDORES
-        if len(seguidores) == cont:
-              self.scroll()
-              time.sleep(2)
-              #AQUI CODIGO PARA EVITAR QUE APARECE "SUGESTÕES"
-              seguidores = self.checkaElemento('body > div > div > div > ul > div > li > div > div > button', True)
-    
+      seguidores_seguir[pos].location_once_scrolled_into_view
+      seguidores_seguir[pos].click()
+      seguil += 1
+      print(f'Seguil: {seguil}')
+
+      time.sleep(self.intervalo)
+
+      print(f'len_seguidores = {len(seguidores_seguir)}')
+      if pos < len(seguidores_seguir):
+        pos += 1
+        print(f'pos = {pos}')
+
+      
+      
   #SEGUE POR HASHTAGS
   def seguirHashtag (self):
     seguil = 0
@@ -236,11 +244,10 @@ class InstagramBot():
     parouDeSeguir = 0
     pos = 0
     pegouTodos = False
-    #VAI NAS PESSOAS QUE SEGUIMOS E VEMOS SE ELAS NOS SEGUEM
-    while 100 > parouDeSeguir:
-      #PEGA PESSOAS QUE VC SEGUE
-      
 
+    #VAI NAS PESSOAS QUE SEGUIMOS E VEMOS SE ELAS NOS SEGUEM
+    while 100 > parouDeSeguir and not self.parar:
+      
       #PEGA TODOS QUE ESTA SEGUINDO
       while not pegouTodos:
             
@@ -273,13 +280,12 @@ class InstagramBot():
           self.checkaElemento('body > div:nth-child(20) > div > div > div > button').click()
           parouDeSeguir += 1
 
-          if pos < len(seguindo):
-            pos += 1
           print(f'Parou de seguir = {parouDeSeguir}')
           time.sleep(self.intervalo)
+
         except:
           print('exeção')
-      else:
+
         if pos < len(seguindo):
           pos += 1
 
