@@ -17,8 +17,8 @@ class InstagramBot():
 
     #LIMITES E INTERVALOS
     self.parar = False                        #FUTURAMENTE PARA BOTÃO QUE PARA INTERAÇÃO
-    self.limiteDiario = 350                   #LIMITE DE SEGUIR E PARAR DE SEGUIR POR DIA
-    self.seguirPorHora = 30                   #LIMITE DE SEGUIR POR HORA
+    self.limiteDiario = 200                   #LIMITE DE SEGUIR E PARAR DE SEGUIR POR DIA
+    self.seguirPorHora = 30                   #LIMITE DE SEGUIR E PARAR DE SEGUIR POR HORA
     self.intervalo = 60*60/self.seguirPorHora #INTERVALO ENTRE SEGUIR UMA PESSOA E OUTRA
 
     #HASHTAGS
@@ -247,7 +247,7 @@ class InstagramBot():
     pegouTodos = False
 
     #VAI NAS PESSOAS QUE SEGUIMOS E VEMOS SE ELAS NOS SEGUEM
-    while 100 > parouDeSeguir and not self.parar:
+    while self.limiteDiario > parouDeSeguir and not self.parar:
       
       #PEGA TODOS QUE ESTA SEGUINDO
       while not pegouTodos:
@@ -288,8 +288,8 @@ class InstagramBot():
           print('exeção')
           self.acaoBloqueada()
 
-        if pos < len(seguindo):
-          pos += 1
+      if pos < len(seguindo):
+        pos += 1
 
       print(f'pos = {pos}')
 
