@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -110,11 +112,17 @@ class InstagramBot():
     else:
       print('Não Precisa de Chave')
     
+    #BOTÃO SALVAR CONTA
+    try:
+      self.checkaElemento('#react-root > section > main > div > div > div > div > button').click()
+    except:
+      print('Botão salvar conta não encontrado')
+
     #BOTÃO NAO ATIVAR NOTIFICAÇÕES
     try:
       self.checkaElemento('body > div > div > div > div > button:nth-child(2)').click()
     except:
-      print('Botão não encontrado')
+      print('Botão ativar notificações não encontrado')
     
   #FECHA WEBDRIVE
   def encerra (self):
@@ -138,8 +146,8 @@ class InstagramBot():
 
     #SEGUE SEGUIDORES
     pos = 0
-    seguil = 0
-    while len(seguidores_seguir) >= pos and seguil < self.limiteDiario and self.parar == False:
+    seguiu = 0
+    while len(seguidores_seguir) >= pos and seguiu < self.limiteDiario and self.parar == False:
       
       #PEGA VARIOS PARA IR SEGUINDO
       while len(seguidores_seguir) < self.limiteDiario:
@@ -147,7 +155,7 @@ class InstagramBot():
         time.sleep(0.3)
 
         #TIRA PESSOAS QUE JÁ SEGUIMOS
-        for i in self.checkaElemento('body > div > div > div > ul > div > li > div > div > button', True):
+        for i in self.checkaElemento('body > div > div > div > div > ul > div > li > div > div > button', True):
           if i.text == 'Seguir' and i not in seguidores_seguir:
             seguidores_seguir.append(i)
       
@@ -155,8 +163,8 @@ class InstagramBot():
         #SEGUE UM POR UM
         seguidores_seguir[pos].location_once_scrolled_into_view
         seguidores_seguir[pos].click()
-        seguil += 1
-        print(f'Seguil: {seguil}')
+        seguiu += 1
+        print(f'seguiu: {seguiu}')
 
         time.sleep(self.intervalo)
 
@@ -169,7 +177,7 @@ class InstagramBot():
 
   #SEGUE POR HASHTAGS
   def seguirHashtag (self):
-    seguil = 0
+    seguiu = 0
     for hash in self.hashtags:
       #ACESSA A TAG
       self.browser.get(f'https://www.instagram.com/explore/tags/{hash}/')
@@ -177,9 +185,9 @@ class InstagramBot():
       #PEGA A PRIMEIRA IMAGEN DA HASHTAG
       self.checkaElemento('article > div > div > div > div:nth-child(1) > div:nth-child(1) a').click()
       
-      seguilHash = 0
+      seguiuHash = 0
       #ENQUANTO NÃO CHEGA NO LIMITE DIARIO
-      while seguil < self.limiteDiario and self.parar == False and seguilHash < self.seguirPorHashtag:
+      while seguiu < self.limiteDiario and self.parar == False and seguiuHash < self.seguirPorHashtag:
         
         botao = self.checkaElemento('article div > div > div > button')
         #CASO O POST SEJA SEU
@@ -192,9 +200,9 @@ class InstagramBot():
 
           #CONFERE SE AÇÃO NÃO FOI BLOQUEADA
           if self.acaoBloqueada() == False:
-            seguilHash += 1
-            seguil += 1
-            print(f'Seguil {seguil}')
+            seguiuHash += 1
+            seguiu += 1
+            print(f'seguiu {seguiu}')
             time.sleep(self.intervalo)
         
 
